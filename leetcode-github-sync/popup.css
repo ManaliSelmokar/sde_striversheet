@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light;
+  --ink: #17211b;
+  --muted: #66736a;
+  --line: #d9e2da;
+  --paper: #f7faf4;
+  --accent: #d85b36;
+  --accent-dark: #a73e23;
+}
+
+* { box-sizing: border-box; }
+body { width: 320px; margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.4 Georgia, serif; }
+main { padding: 22px; background: linear-gradient(145deg, #f7faf4 0%, #edf4ea 100%); }
+h1 { margin: 0 0 6px; font-size: 23px; letter-spacing: 0; }
+h1 span { color: var(--accent); }
+.status { margin: 0 0 18px; color: var(--muted); font-family: system-ui, sans-serif; font-size: 12px; }
+label { display: block; margin: 11px 0; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+input { display: block; width: 100%; margin-top: 5px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 4px; background: white; color: var(--ink); font: 14px Georgia, serif; }
+button { width: 100%; margin-top: 6px; padding: 10px; border: 0; border-radius: 4px; background: var(--accent); color: white; cursor: pointer; font: 700 13px system-ui, sans-serif; }
+button:hover { background: var(--accent-dark); }
+.hint { margin: 14px 0 0; color: var(--muted); font: 11px/1.45 system-ui, sans-serif; }

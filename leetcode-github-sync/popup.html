@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LeetCode GitHub Sync</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>LeetCode <span>→ GitHub</span></h1>
+    <p class="status" id="status">Configure the repository once.</p>
+    <label>GitHub token<input id="token" type="password" autocomplete="off" placeholder="github_pat_..."></label>
+    <label>Owner<input id="owner" type="text"></label>
+    <label>Repository<input id="repo" type="text"></label>
+    <label>Branch<input id="branch" type="text"></label>
+    <label>Folder<input id="basePath" type="text"></label>
+    <button id="save">Save settings</button>
+    <p class="hint">Use a fine-grained token with Contents read/write access to this repository.</p>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
