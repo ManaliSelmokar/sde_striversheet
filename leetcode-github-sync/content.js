@@ -8,25 +8,32 @@ const observer = new MutationObserver(() => {
     return;
   }
 
-  const code = readEditorCode();
-  if (!code || code === lastCode) {
-    return;
-  }
-
   lastAcceptedText = pageText;
-  lastCode = code;
-  chrome.runtime.sendMessage({
-    type: "accepted-submission",
-    submission: {
-      title: readTitle(),
-      language: readLanguage(),
-      code,
-      url: window.location.href
-    }
-  });
+  captureAndSend();
 });
 
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+async function captureAndSend() {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const code = readEditorCode();
+    if (code && code !== lastCode) {
+      lastCode = code;
+      chrome.runtime.sendMessage({
+        type: "accepted-submission",
+        submission: {
+          title: readTitle(),
+          language: readLanguage(),
+          code,
+          url: window.location.href
+        }
+      });
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+  chrome.runtime.sendMessage({ type: "sync-error", error: "Accepted, but the code editor was not readable." });
+}
 
 function readTitle() {
   const heading = document.querySelector("h1");

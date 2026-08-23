@@ -1,9 +1,14 @@
 const fields = ["token", "owner", "repo", "branch", "basePath"];
 const defaults = { owner: "ManaliSelmokar", repo: "sde_striversheet", branch: "practice", basePath: "solutions" };
 
-chrome.storage.local.get({ ...defaults, token: "" }).then((settings) => {
+chrome.storage.local.get({ ...defaults, token: "", lastSync: null }).then((settings) => {
   for (const field of fields) {
     document.getElementById(field).value = settings[field] || "";
+  }
+  if (settings.lastSync) {
+    const lastSync = document.getElementById("lastSync");
+    lastSync.textContent = settings.lastSync.message;
+    lastSync.classList.toggle("error", !settings.lastSync.ok);
   }
 });
 

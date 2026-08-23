@@ -6,13 +6,23 @@ const DEFAULTS = {
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "sync-error") {
+    chrome.storage.local.set({ lastSync: { ok: false, message: message.error, at: Date.now() } });
+    return undefined;
+  }
   if (message.type !== "accepted-submission") {
     return undefined;
   }
 
   saveSubmission(message.submission)
-    .then((result) => sendResponse({ ok: true, result }))
-    .catch((error) => sendResponse({ ok: false, error: error.message }));
+    .then((result) => {
+      chrome.storage.local.set({ lastSync: { ok: true, message: `Saved ${result.path}`, url: result.url, at: Date.now() } });
+      sendResponse({ ok: true, result });
+    })
+    .catch((error) => {
+      chrome.storage.local.set({ lastSync: { ok: false, message: error.message, at: Date.now() } });
+      sendResponse({ ok: false, error: error.message });
+    });
 
   return true;
 });
