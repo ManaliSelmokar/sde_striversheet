@@ -94,6 +94,7 @@ function slugify(value) {
 function languageExtension(language = "text") {
   const extensions = {
     cpp: "cpp",
+    "c++": "cpp",
     java: "java",
     python: "py",
     python3: "py",
@@ -101,6 +102,7 @@ function languageExtension(language = "text") {
     typescript: "ts",
     c: "c",
     csharp: "cs",
+    "c#": "cs",
     go: "go",
     rust: "rs",
     kotlin: "kt",

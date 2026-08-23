@@ -15,7 +15,7 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 
 async function captureAndSend() {
-  for (let attempt = 0; attempt < 5; attempt += 1) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
     const code = readEditorCode();
     if (code && code !== lastCode) {
       lastCode = code;
@@ -46,6 +46,11 @@ function readLanguage() {
 }
 
 function readEditorCode() {
+  const editor = document.querySelector('textarea[aria-label="Code editor"]');
+  if (editor?.value?.trim()) {
+    return editor.value.trim();
+  }
+
   const lines = [...document.querySelectorAll(".view-lines .view-line, pre code, textarea")];
   const code = lines.map((line) => line.value ?? line.textContent ?? "").join("\n").trim();
   return code.length > 20 ? code : "";
