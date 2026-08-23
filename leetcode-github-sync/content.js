@@ -2,37 +2,61 @@ let lastAcceptedText = "";
 let lastCode = "";
 
 const observer = new MutationObserver(() => {
-  const pageText = document.body.innerText;
-  const accepted = /accepted/i.test(pageText) && pageText !== lastAcceptedText;
+  const acceptedNode = findAcceptedNode();
+  const accepted = acceptedNode && acceptedNode !== lastAcceptedText;
   if (!accepted) {
     return;
   }
 
-  lastAcceptedText = pageText;
+  lastAcceptedText = acceptedNode;
   captureAndSend();
 });
 
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type !== "sync-current") {
+    return;
+  }
+  const code = readEditorCode();
+  if (!code) {
+    sendResponse({ ok: false, error: "The code editor is empty or not available." });
+    return;
+  }
+  sendSubmission(code);
+  sendResponse({ ok: true });
+});
 
 async function captureAndSend() {
   for (let attempt = 0; attempt < 12; attempt += 1) {
     const code = readEditorCode();
     if (code && code !== lastCode) {
       lastCode = code;
-      chrome.runtime.sendMessage({
-        type: "accepted-submission",
-        submission: {
-          title: readTitle(),
-          language: readLanguage(),
-          code,
-          url: window.location.href
-        }
-      });
+      sendSubmission(code);
       return;
     }
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   chrome.runtime.sendMessage({ type: "sync-error", error: "Accepted, but the code editor was not readable." });
+}
+
+function sendSubmission(code) {
+  lastCode = code;
+  chrome.runtime.sendMessage({
+    type: "accepted-submission",
+    submission: {
+      title: readTitle(),
+      language: readLanguage(),
+      code,
+      url: window.location.href
+    }
+  });
+}
+
+function findAcceptedNode() {
+  return [...document.querySelectorAll("body *")]
+    .find((element) => element.children.length === 0 && /^accepted$/i.test(element.textContent.trim()))
+    ?.textContent.trim() || "";
 }
 
 function readTitle() {

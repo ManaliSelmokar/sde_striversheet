@@ -19,3 +19,14 @@ document.getElementById("save").addEventListener("click", async () => {
   status.textContent = "Settings saved. Accepted submissions will sync automatically.";
   status.style.color = "#28734b";
 });
+
+document.getElementById("syncCurrent").addEventListener("click", async () => {
+  const status = document.getElementById("status");
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id || !tab.url?.startsWith("https://leetcode.com/problems/")) {
+    status.textContent = "Open a LeetCode problem first.";
+    return;
+  }
+  const response = await chrome.tabs.sendMessage(tab.id, { type: "sync-current" });
+  status.textContent = response?.ok ? "Sync started. Check the result below." : response.error;
+});
