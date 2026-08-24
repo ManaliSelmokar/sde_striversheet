@@ -6,26 +6,17 @@ document.getElementById("settingsToggle").addEventListener("click", () => {
   settingsPanel.hidden = !settingsPanel.hidden;
 });
 
-chrome.storage.local.get({ ...defaults, token: "", lastSync: null, lastNotificationError: "" }, (settings) => {
+chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) => {
   for (const field of fields) {
     document.getElementById(field).value = settings[field] || "";
   }
   document.getElementById("status").textContent = settings.token ? "Token saved. Ready to sync." : "Add a GitHub token in the extension settings first.";
+  document.getElementById("destination").textContent = settings.owner && settings.repo ? `${settings.owner}/${settings.repo} · ${settings.branch}` : "Repository not configured";
   if (settings.lastSync) {
     const lastSync = document.getElementById("lastSync");
     lastSync.textContent = settings.lastSync.message;
     lastSync.classList.toggle("error", !settings.lastSync.ok);
   }
-  if (settings.lastNotificationError) {
-    document.getElementById("lastSync").textContent = `Notification error: ${settings.lastNotificationError}`;
-    document.getElementById("lastSync").classList.add("error");
-  }
-});
-
-document.getElementById("testNotification").addEventListener("click", async () => {
-  const status = document.getElementById("status");
-  const response = await chrome.runtime.sendMessage({ type: "test-notification" });
-  status.textContent = response?.ok ? "Test sent. Check your desktop notifications." : "Could not send test notification.";
 });
 
 document.getElementById("save").addEventListener("click", async () => {

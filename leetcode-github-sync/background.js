@@ -6,11 +6,6 @@ const DEFAULTS = {
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "test-notification") {
-    notify("Test notification", "LeetCode GitHub Sync notifications are enabled.");
-    sendResponse({ ok: true });
-    return false;
-  }
   if (message.type === "sync-error") {
     chrome.storage.local.set({ lastSync: { ok: false, message: message.error, at: Date.now() } });
     notify("Sync failed", message.error);
@@ -43,16 +38,9 @@ function notify(title, message) {
     title,
     message
   }, () => {
-    const error = chrome.runtime.lastError;
-    if (error) {
-      chrome.storage.local.set({ lastNotificationError: error.message });
-      chrome.action.setBadgeText({ text: "!" });
-      chrome.action.setBadgeBackgroundColor({ color: "#a73e23" });
-      return;
-    }
-    chrome.storage.local.remove("lastNotificationError");
     chrome.action.setBadgeText({ text: "✓" });
     chrome.action.setBadgeBackgroundColor({ color: "#28734b" });
+    void chrome.runtime.lastError;
   });
 }
 
