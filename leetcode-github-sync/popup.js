@@ -15,6 +15,7 @@ chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) 
   if (settings.lastSync) {
     const lastSync = document.getElementById("lastSync");
     lastSync.textContent = settings.lastSync.message;
+    lastSync.classList.remove("empty");
     lastSync.classList.toggle("error", !settings.lastSync.ok);
   }
 });
@@ -32,12 +33,10 @@ document.getElementById("save").addEventListener("click", async () => {
       const error = chrome.runtime.lastError;
       error ? reject(new Error(error.message)) : resolve();
     }));
-    status.textContent = "Token saved. Ready to sync.";
-    status.style.color = "#28734b";
+    setStatus("Token saved. Ready to sync.", "success");
     settingsPanel.hidden = true;
   } catch (error) {
-    status.textContent = `Could not save settings: ${error.message}`;
-    status.style.color = "#a73e23";
+    setStatus(`Could not save settings: ${error.message}`, "error");
   }
 });
 
@@ -67,7 +66,7 @@ document.getElementById("syncCurrent").addEventListener("click", async () => {
       throw new Error("The code editor is empty or not available. Refresh LeetCode and try again.");
     }
 
-    status.textContent = "Uploading solution...";
+    setStatus("Uploading solution...", "working");
     const response = await chrome.runtime.sendMessage({
       type: "accepted-submission",
       submission: { ...result.result, url: tab.url }
@@ -75,9 +74,16 @@ document.getElementById("syncCurrent").addEventListener("click", async () => {
     if (!response?.ok) {
       throw new Error(response?.error || "The upload failed.");
     }
-    status.textContent = `Saved ${response.result.path}`;
+    setStatus(`Saved ${response.result.path}`, "success");
   } catch (error) {
-    status.textContent = error.message;
-    status.style.color = "#a73e23";
+    setStatus(error.message, "error");
   }
 });
+
+function setStatus(message, state = "") {
+  const status = document.getElementById("status");
+  const statusDot = document.querySelector(".status-dot");
+  status.textContent = message;
+  status.className = `status ${state}`;
+  statusDot.className = `status-dot ${state}`;
+}
