@@ -9,7 +9,9 @@ const observer = new MutationObserver(() => {
   }
 
   lastAcceptedText = acceptedNode;
-  captureAndSend();
+  captureAndSend().catch(() => {
+    // The extension can be reloaded while a submission is being captured.
+  });
 });
 
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
