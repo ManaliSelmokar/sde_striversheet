@@ -1,5 +1,5 @@
 const fields = ["token", "owner", "repo", "branch", "basePath"];
-const defaults = { owner: "ManaliSelmokar", repo: "sde_striversheet", branch: "practice", basePath: "solutions" };
+const defaults = { owner: "", repo: "", branch: "main", basePath: "solutions" };
 const settingsPanel = document.getElementById("settingsPanel");
 
 document.getElementById("settingsToggle").addEventListener("click", () => {

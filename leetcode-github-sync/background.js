@@ -1,7 +1,7 @@
 const DEFAULTS = {
-  owner: "ManaliSelmokar",
-  repo: "sde_striversheet",
-  branch: "practice",
+  owner: "",
+  repo: "",
+  branch: "main",
   basePath: "solutions"
 };
 
@@ -31,11 +31,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function notify(title, message) {
-  chrome.notifications.create({
+  const notificationId = `leetcode-github-sync-${Date.now()}`;
+  chrome.notifications.create(notificationId, {
     type: "basic",
     iconUrl: chrome.runtime.getURL("icon.svg"),
     title,
     message
+  }, () => {
+    // Reading lastError prevents an unavailable OS notification provider from becoming an uncaught error.
+    void chrome.runtime.lastError;
   });
 }
 
