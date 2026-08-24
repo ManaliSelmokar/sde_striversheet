@@ -22,11 +22,41 @@ document.getElementById("save").addEventListener("click", async () => {
 
 document.getElementById("syncCurrent").addEventListener("click", async () => {
   const status = document.getElementById("status");
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab?.id || !tab.url?.startsWith("https://leetcode.com/problems/")) {
-    status.textContent = "Open a LeetCode problem first.";
-    return;
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.id || !tab.url?.startsWith("https://leetcode.com/problems/")) {
+      throw new Error("Open a LeetCode problem first.");
+    }
+
+    const [result] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => {
+        const editor = document.querySelector('textarea[aria-label="Code editor"]');
+        const heading = document.querySelector("h1");
+        const languageButton = [...document.querySelectorAll("button")].find((button) => /^(C\+\+|Java|Python|Python3|JavaScript|TypeScript|Go|Rust|C#|Kotlin|Swift|Ruby|PHP)$/i.test(button.textContent.trim()));
+        return {
+          title: heading?.textContent?.replace(/^\d+\.\s*/, "").trim() || location.pathname.split("/")[2],
+          language: languageButton?.textContent.trim() || "text",
+          code: editor?.value?.trim() || ""
+        };
+      }
+    });
+
+    if (!result.result.code) {
+      throw new Error("The code editor is empty or not available. Refresh LeetCode and try again.");
+    }
+
+    status.textContent = "Uploading solution...";
+    const response = await chrome.runtime.sendMessage({
+      type: "accepted-submission",
+      submission: { ...result.result, url: tab.url }
+    });
+    if (!response?.ok) {
+      throw new Error(response?.error || "The upload failed.");
+    }
+    status.textContent = `Saved ${response.result.path}`;
+  } catch (error) {
+    status.textContent = error.message;
+    status.style.color = "#a73e23";
   }
-  const response = await chrome.tabs.sendMessage(tab.id, { type: "sync-current" });
-  status.textContent = response?.ok ? "Sync started. Check the result below." : response.error;
 });
