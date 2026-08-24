@@ -8,17 +8,24 @@
 </head>
 <body>
   <main>
+    <header>
+      <div class="brand-mark">LC<span>→</span>GH</div>
+      <button id="settingsToggle" class="icon-button" aria-label="Open settings" title="Settings">⚙</button>
+    </header>
     <h1>LeetCode <span>→ GitHub</span></h1>
-    <p class="status" id="status">Configure the repository once.</p>
+    <p class="status" id="status">Ready to save your next accepted solution.</p>
     <p class="last-sync" id="lastSync"></p>
-    <button id="syncCurrent" class="secondary">Sync current solution</button>
-    <label>GitHub token<input id="token" type="password" autocomplete="off" placeholder="github_pat_..." required></label>
-    <label>Owner<input id="owner" type="text"></label>
-    <label>Repository<input id="repo" type="text"></label>
-    <label>Branch<input id="branch" type="text"></label>
-    <label>Folder<input id="basePath" type="text"></label>
-    <button id="save">Save settings</button>
-    <p class="hint">Use a fine-grained token with Contents read/write access to this repository.</p>
+    <button id="syncCurrent" class="primary">Sync current solution</button>
+    <section id="settingsPanel" hidden>
+      <div class="section-heading"><strong>Settings</strong><span>Repository connection</span></div>
+      <label>GitHub token<input id="token" type="password" autocomplete="off" placeholder="github_pat_..." required></label>
+      <label>Owner<input id="owner" type="text"></label>
+      <label>Repository<input id="repo" type="text"></label>
+      <label>Branch<input id="branch" type="text"></label>
+      <label>Folder<input id="basePath" type="text"></label>
+      <button id="save">Save settings</button>
+      <p class="hint">Fine-grained token with Contents read/write access.</p>
+    </section>
   </main>
   <script src="popup.js"></script>
 </body>

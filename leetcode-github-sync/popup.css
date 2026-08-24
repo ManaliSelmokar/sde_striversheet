@@ -10,16 +10,26 @@
 
 * { box-sizing: border-box; }
 body { width: 320px; margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.4 Georgia, serif; }
-main { padding: 22px; background: linear-gradient(145deg, #f7faf4 0%, #edf4ea 100%); }
+main { min-height: 240px; padding: 18px 20px 20px; background: linear-gradient(145deg, #f7faf4 0%, #edf4ea 100%); }
+header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+.brand-mark { color: var(--accent); font: 700 12px system-ui, sans-serif; letter-spacing: .12em; }
+.brand-mark span { padding: 0 4px; color: var(--muted); }
+.icon-button { width: 30px; height: 30px; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: var(--ink); font-size: 16px; line-height: 1; }
+.icon-button:hover { background: white; color: var(--accent); }
 h1 { margin: 0 0 6px; font-size: 23px; letter-spacing: 0; }
 h1 span { color: var(--accent); }
 .status { margin: 0 0 18px; color: var(--muted); font-family: system-ui, sans-serif; font-size: 12px; }
 .last-sync { margin: -8px 0 12px; color: #28734b; font: 11px/1.4 system-ui, sans-serif; overflow-wrap: anywhere; }
 .last-sync.error { color: #a73e23; }
+section { margin-top: 20px; padding-top: 17px; border-top: 1px solid var(--line); }
+.section-heading { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; font-family: system-ui, sans-serif; }
+.section-heading strong { font-size: 14px; }
+.section-heading span { color: var(--muted); font-size: 10px; }
 label { display: block; margin: 11px 0; font-family: system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 input { display: block; width: 100%; margin-top: 5px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 4px; background: white; color: var(--ink); font: 14px Georgia, serif; }
 button { width: 100%; margin-top: 6px; padding: 10px; border: 0; border-radius: 4px; background: var(--accent); color: white; cursor: pointer; font: 700 13px system-ui, sans-serif; }
 button:hover { background: var(--accent-dark); }
+button.primary { margin-top: 14px; padding: 12px; }
 button.secondary { margin-top: 9px; background: #28734b; }
 button.secondary:hover { background: #1e5839; }
 .hint { margin: 14px 0 0; color: var(--muted); font: 11px/1.45 system-ui, sans-serif; }

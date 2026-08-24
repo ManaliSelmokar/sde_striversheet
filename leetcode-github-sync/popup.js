@@ -1,5 +1,10 @@
 const fields = ["token", "owner", "repo", "branch", "basePath"];
 const defaults = { owner: "ManaliSelmokar", repo: "sde_striversheet", branch: "practice", basePath: "solutions" };
+const settingsPanel = document.getElementById("settingsPanel");
+
+document.getElementById("settingsToggle").addEventListener("click", () => {
+  settingsPanel.hidden = !settingsPanel.hidden;
+});
 
 chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) => {
   for (const field of fields) {
@@ -28,6 +33,7 @@ document.getElementById("save").addEventListener("click", async () => {
     }));
     status.textContent = "Token saved. Ready to sync.";
     status.style.color = "#28734b";
+    settingsPanel.hidden = true;
   } catch (error) {
     status.textContent = `Could not save settings: ${error.message}`;
     status.style.color = "#a73e23";

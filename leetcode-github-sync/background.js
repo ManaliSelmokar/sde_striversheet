@@ -8,6 +8,7 @@ const DEFAULTS = {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "sync-error") {
     chrome.storage.local.set({ lastSync: { ok: false, message: message.error, at: Date.now() } });
+    notify("Sync failed", message.error);
     return undefined;
   }
   if (message.type !== "accepted-submission") {
@@ -17,15 +18,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   saveSubmission(message.submission)
     .then((result) => {
       chrome.storage.local.set({ lastSync: { ok: true, message: `Saved ${result.path}`, url: result.url, at: Date.now() } });
+      notify("Solution added", `Added "${message.submission.title}" to "${result.repository}"`);
       sendResponse({ ok: true, result });
     })
     .catch((error) => {
       chrome.storage.local.set({ lastSync: { ok: false, message: error.message, at: Date.now() } });
+      notify("Sync failed", error.message);
       sendResponse({ ok: false, error: error.message });
     });
 
   return true;
 });
+
+function notify(title, message) {
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: chrome.runtime.getURL("icon.svg"),
+    title,
+    message
+  });
+}
 
 async function saveSubmission(submission) {
   const storedSettings = await new Promise((resolve, reject) => chrome.storage.local.get({ ...DEFAULTS, token: "" }, (settings) => {
@@ -78,7 +90,7 @@ async function saveSubmission(submission) {
     throw await githubError(response);
   }
 
-  return { path, url: (await response.json()).content.html_url };
+  return { path, url: (await response.json()).content.html_url, repository: `${settings.owner}/${settings.repo}` };
 }
 
 async function githubError(response) {

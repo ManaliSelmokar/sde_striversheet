@@ -3,7 +3,7 @@
   "name": "LeetCode GitHub Sync",
   "version": "0.1.0",
   "description": "Save accepted LeetCode submissions to a GitHub repository.",
-  "permissions": ["storage", "activeTab", "scripting", "tabs"],
+  "permissions": ["storage", "activeTab", "scripting", "tabs", "notifications"],
   "host_permissions": ["https://leetcode.com/*", "https://api.github.com/*"],
   "action": {
     "default_title": "LeetCode GitHub Sync",
