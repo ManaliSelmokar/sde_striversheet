@@ -1,10 +1,11 @@
 const fields = ["token", "owner", "repo", "branch", "basePath"];
 const defaults = { owner: "ManaliSelmokar", repo: "sde_striversheet", branch: "practice", basePath: "solutions" };
 
-chrome.storage.local.get({ ...defaults, token: "", lastSync: null }).then((settings) => {
+chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) => {
   for (const field of fields) {
     document.getElementById(field).value = settings[field] || "";
   }
+  document.getElementById("status").textContent = settings.token ? "Token saved. Ready to sync." : "Add a GitHub token in the extension settings first.";
   if (settings.lastSync) {
     const lastSync = document.getElementById("lastSync");
     lastSync.textContent = settings.lastSync.message;
@@ -14,10 +15,23 @@ chrome.storage.local.get({ ...defaults, token: "", lastSync: null }).then((setti
 
 document.getElementById("save").addEventListener("click", async () => {
   const settings = Object.fromEntries(fields.map((field) => [field, document.getElementById(field).value.trim()]));
-  await chrome.storage.local.set(settings);
   const status = document.getElementById("status");
-  status.textContent = "Settings saved. Accepted submissions will sync automatically.";
-  status.style.color = "#28734b";
+  if (!settings.token) {
+    status.textContent = "Paste a GitHub token before saving.";
+    status.style.color = "#a73e23";
+    return;
+  }
+  try {
+    await new Promise((resolve, reject) => chrome.storage.local.set(settings, () => {
+      const error = chrome.runtime.lastError;
+      error ? reject(new Error(error.message)) : resolve();
+    }));
+    status.textContent = "Token saved. Ready to sync.";
+    status.style.color = "#28734b";
+  } catch (error) {
+    status.textContent = `Could not save settings: ${error.message}`;
+    status.style.color = "#a73e23";
+  }
 });
 
 document.getElementById("syncCurrent").addEventListener("click", async () => {

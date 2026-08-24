@@ -28,7 +28,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function saveSubmission(submission) {
-  const settings = { ...DEFAULTS, ...(await chrome.storage.local.get(DEFAULTS)) };
+  const storedSettings = await new Promise((resolve, reject) => chrome.storage.local.get(DEFAULTS, (settings) => {
+    const error = chrome.runtime.lastError;
+    error ? reject(new Error(error.message)) : resolve(settings);
+  }));
+  const settings = { ...DEFAULTS, ...storedSettings };
   if (!settings.token) {
     throw new Error("Add a GitHub token in the extension settings first.");
   }
