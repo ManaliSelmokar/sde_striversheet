@@ -39,6 +39,7 @@ function notify(title, message) {
   const notificationId = `leetcode-github-sync-${Date.now()}`;
   chrome.notifications.create(notificationId, {
     type: "basic",
+    iconUrl: chrome.runtime.getURL("icon.png"),
     title,
     message
   }, () => {

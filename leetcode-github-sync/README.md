@@ -34,6 +34,7 @@ Configured repository branch
 - `content.js`: Watches LeetCode result changes, extracts problem metadata and editor code, and sends submissions to the service worker.
 - `popup.html`, `popup.css`, `popup.js`: Provides the status view, settings panel, and manual sync action.
 - `background.js`: Reads configuration, calls the GitHub Contents API, updates sync status, and creates notifications.
+- `icon.png`: PNG notification icon required by the browser notification API.
 
 ## Installation
 
@@ -81,7 +82,7 @@ After a successful upload, the extension sends a notification in this format:
 Added "<problem title>" to "<owner>/<repository>"
 ```
 
-The extension also notifies you when capture, authentication, permissions, or GitHub API requests fail. Browser and operating-system notification settings must allow notifications from the browser for these messages to appear. Notifications intentionally use no custom image asset for maximum browser compatibility.
+The extension also notifies you when capture, authentication, permissions, or GitHub API requests fail. Browser and operating-system notification settings must allow notifications from the browser for these messages to appear.
 
 ## Limitations
 
