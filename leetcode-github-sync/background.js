@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function saveSubmission(submission) {
-  const storedSettings = await new Promise((resolve, reject) => chrome.storage.local.get(DEFAULTS, (settings) => {
+  const storedSettings = await new Promise((resolve, reject) => chrome.storage.local.get({ ...DEFAULTS, token: "" }, (settings) => {
     const error = chrome.runtime.lastError;
     error ? reject(new Error(error.message)) : resolve(settings);
   }));
