@@ -6,7 +6,7 @@ document.getElementById("settingsToggle").addEventListener("click", () => {
   settingsPanel.hidden = !settingsPanel.hidden;
 });
 
-chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) => {
+chrome.storage.local.get({ ...defaults, token: "", lastSync: null, lastNotificationError: "" }, (settings) => {
   for (const field of fields) {
     document.getElementById(field).value = settings[field] || "";
   }
@@ -16,6 +16,16 @@ chrome.storage.local.get({ ...defaults, token: "", lastSync: null }, (settings) 
     lastSync.textContent = settings.lastSync.message;
     lastSync.classList.toggle("error", !settings.lastSync.ok);
   }
+  if (settings.lastNotificationError) {
+    document.getElementById("lastSync").textContent = `Notification error: ${settings.lastNotificationError}`;
+    document.getElementById("lastSync").classList.add("error");
+  }
+});
+
+document.getElementById("testNotification").addEventListener("click", async () => {
+  const status = document.getElementById("status");
+  const response = await chrome.runtime.sendMessage({ type: "test-notification" });
+  status.textContent = response?.ok ? "Test sent. Check your desktop notifications." : "Could not send test notification.";
 });
 
 document.getElementById("save").addEventListener("click", async () => {
