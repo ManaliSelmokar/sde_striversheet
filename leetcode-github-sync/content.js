@@ -37,12 +37,12 @@ async function captureAndSend() {
     }
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  chrome.runtime.sendMessage({ type: "sync-error", error: "Accepted, but the code editor was not readable." });
+  safeSendMessage({ type: "sync-error", error: "Accepted, but the code editor was not readable." });
 }
 
 function sendSubmission(code) {
   lastCode = code;
-  chrome.runtime.sendMessage({
+  safeSendMessage({
     type: "accepted-submission",
     submission: {
       title: readTitle(),
@@ -51,6 +51,16 @@ function sendSubmission(code) {
       url: window.location.href
     }
   });
+}
+
+function safeSendMessage(message) {
+  try {
+    chrome.runtime.sendMessage(message).catch(() => {
+      // The page may still contain a content script from before an extension reload.
+    });
+  } catch {
+    // Ignore a stale content script; refreshing the page installs the current one.
+  }
 }
 
 function findAcceptedNode() {
