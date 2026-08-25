@@ -15,12 +15,3 @@ class Solution {
         {
             idx++;
         }
-        recursiveSubsets(nums, allSubsets, ans, idx);
-    }
-
-    public List<List<Integer>> subsetsWithDup(int[] nums) 
-    {
-        Arrays.sort(nums);
-        List<List<Integer>> allSubsets = new ArrayList<>();
-        List<Integer> ans = new ArrayList<>();
-        recursiveS
